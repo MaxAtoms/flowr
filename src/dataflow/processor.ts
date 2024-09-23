@@ -7,7 +7,7 @@ import type {
 	ParentInformation,
 	RNodeWithParent
 } from '../r-bridge/lang-4.x/ast/model/processing/decorate';
-import type { IREnvironmentInformation } from './environments/environment';
+import type { REnvironmentInformation } from './environments/environment';
 import type { RParseRequest } from '../r-bridge/retriever';
 import type { RNode } from '../r-bridge/lang-4.x/ast/model/model';
 
@@ -20,7 +20,7 @@ export interface DataflowProcessorInformation<OtherInfo> {
    * Correctly contains pushed local scopes introduced by `function` scopes.
    * Will by default *not* contain any symbol-bindings introduced along the way; they have to be decorated when moving up the tree.
    */
-	readonly environment:         IREnvironmentInformation
+	readonly environment:         REnvironmentInformation
 	/**
    * Other processors to be called by the given functions
    */

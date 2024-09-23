@@ -1,4 +1,4 @@
-import type { IEnvironment, IREnvironmentInformation } from './environment';
+import type { IEnvironment, REnvironmentInformation } from './environment';
 import { BuiltInEnvironment } from './environment';
 import { Ternary } from '../../util/logic';
 import type { Identifier, IdentifierDefinition } from './identifier';
@@ -13,7 +13,7 @@ import { happensInEveryBranch } from '../info';
  *
  * @returns A list of possible definitions of the identifier (one if the definition location is exactly and always known), or `undefined` if the identifier is undefined in the current scope/with the current environment information.
  */
-export function resolveByName(name: Identifier, environment: IREnvironmentInformation): IdentifierDefinition[] | undefined {
+export function resolveByName(name: Identifier, environment: REnvironmentInformation): IdentifierDefinition[] | undefined {
 	let current: IEnvironment = environment.current;
 	let definitions: IdentifierDefinition[] | undefined = undefined;
 	do{
@@ -37,7 +37,7 @@ export function resolveByName(name: Identifier, environment: IREnvironmentInform
 	}
 }
 
-export function resolvesToBuiltInConstant(name: Identifier | undefined, environment: IREnvironmentInformation, wantedValue: unknown): Ternary {
+export function resolvesToBuiltInConstant(name: Identifier | undefined, environment: REnvironmentInformation, wantedValue: unknown): Ternary {
 	if(name === undefined) {
 		return Ternary.Never;
 	}

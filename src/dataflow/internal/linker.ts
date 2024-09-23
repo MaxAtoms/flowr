@@ -21,7 +21,7 @@ import { VertexType } from '../graph/vertex';
 import { resolveByName } from '../environments/resolve-by-name';
 import { BuiltIn } from '../environments/built-in';
 import { slicerLogger } from '../../slicing/static/static-slicer';
-import type { IREnvironmentInformation } from '../environments/environment';
+import type { REnvironmentInformation } from '../environments/environment';
 
 export type NameIdMap = DefaultMap<string, IdentifierReference[]>
 
@@ -271,7 +271,7 @@ export function getAllLinkedFunctionDefinitions(
  *
  * @returns the given inputs, possibly extended with the remaining inputs (those of `referencesToLinkAgainstEnvironment` that could not be linked against the environment)
  */
-export function linkInputs(referencesToLinkAgainstEnvironment: readonly IdentifierReference[], environmentInformation: IREnvironmentInformation, givenInputs: IdentifierReference[], graph: DataflowGraph, maybeForRemaining: boolean): IdentifierReference[] {
+export function linkInputs(referencesToLinkAgainstEnvironment: readonly IdentifierReference[], environmentInformation: REnvironmentInformation, givenInputs: IdentifierReference[], graph: DataflowGraph, maybeForRemaining: boolean): IdentifierReference[] {
 	for(const bodyInput of referencesToLinkAgainstEnvironment) {
 		const probableTarget = bodyInput.name ? resolveByName(bodyInput.name, environmentInformation) : undefined;
 		if(probableTarget === undefined) {

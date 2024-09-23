@@ -1,5 +1,5 @@
 import type { NodeId } from '../../r-bridge/lang-4.x/ast/model/processing/node-id';
-import type { IREnvironmentInformation } from '../../dataflow/environments/environment';
+import type { REnvironmentInformation } from '../../dataflow/environments/environment';
 import type { DecodedCriteria } from '../criterion/parse';
 
 
@@ -10,7 +10,7 @@ import type { DecodedCriteria } from '../criterion/parse';
 export interface NodeToSlice {
 	readonly id:                 NodeId
 	/** used for calling context, etc. */
-	readonly baseEnvironment:    IREnvironmentInformation
+	readonly baseEnvironment:    REnvironmentInformation
 	/** if we add a function call, we may need it only for its side effects (e.g., a redefinition of a global variable), if so, 'returns' links will not be traced */
 	readonly onlyForSideEffects: boolean
 }

@@ -4,7 +4,7 @@ import { normalizeIdToNumberIfPossible } from '../../r-bridge/lang-4.x/ast/model
 import type { AstIdMap } from '../../r-bridge/lang-4.x/ast/model/processing/decorate';
 import type { DataflowFunctionFlowInformation, FunctionArgument } from './graph';
 import { isPositionalArgument, DataflowGraph } from './graph';
-import type { IREnvironmentInformation } from '../environments/environment';
+import type { REnvironmentInformation } from '../environments/environment';
 import { initializeCleanEnvironments } from '../environments/environment';
 import type { DataflowGraphVertexUse } from './vertex';
 import { VertexType } from './vertex';
@@ -37,7 +37,7 @@ export class DataflowGraphBuilder extends DataflowGraph {
 	 */
 	public defineFunction(id: NodeId,
 		exitPoints: readonly NodeId[], subflow: DataflowFunctionFlowInformation,
-		info?: { environment?: IREnvironmentInformation, controlDependencies?: ControlDependency[] },
+		info?: { environment?: REnvironmentInformation, controlDependencies?: ControlDependency[] },
 		asRoot: boolean = true) {
 		return this.addVertex({
 			tag:     VertexType.FunctionDefinition,
@@ -71,7 +71,7 @@ export class DataflowGraphBuilder extends DataflowGraph {
 			returns?:             readonly NodeId[],
 			reads?:               readonly NodeId[],
 			onlyBuiltIn?:         boolean,
-			environment?:         IREnvironmentInformation,
+			environment?:         REnvironmentInformation,
 			controlDependencies?: ControlDependency[]
 		},
 		asRoot: boolean = true) {

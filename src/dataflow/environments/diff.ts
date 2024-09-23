@@ -1,6 +1,6 @@
 import type { GenericDifferenceInformation, WriteableDifferenceReport } from '../../util/diff';
 import { setDifference } from '../../util/diff';
-import type { IEnvironment, IREnvironmentInformation } from './environment';
+import type { IEnvironment, REnvironmentInformation } from './environment';
 import { builtInEnvJsonReplacer } from './environment';
 import { jsonReplacer } from '../../util/json';
 import type { IdentifierReference } from './identifier';
@@ -77,7 +77,7 @@ export function diffEnvironment<Report extends WriteableDifferenceReport>(a: IEn
 	diffEnvironment(a.parent, b.parent, { ...info, position: `${info.position}Parents of ${a.id} & ${b.id}. ` }, depth--);
 }
 
-export function diffEnvironmentInformation<Report extends WriteableDifferenceReport>(a: IREnvironmentInformation | undefined, b: IREnvironmentInformation | undefined, info: GenericDifferenceInformation<Report>): void {
+export function diffEnvironmentInformation<Report extends WriteableDifferenceReport>(a: REnvironmentInformation | undefined, b: REnvironmentInformation | undefined, info: GenericDifferenceInformation<Report>): void {
 	if(a === undefined || b === undefined) {
 		if(a !== b) {
 			info.report.addComment(`${info.position}Different environments: ${JSON.stringify(a, builtInEnvJsonReplacer)} vs. ${JSON.stringify(b, builtInEnvJsonReplacer)}`);

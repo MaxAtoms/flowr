@@ -1,5 +1,5 @@
 import { guard } from '../../util/assert';
-import type { IREnvironmentInformation, IEnvironment } from './environment';
+import type { REnvironmentInformation, IEnvironment } from './environment';
 import { Environment, BuiltInEnvironment } from './environment';
 import type { IdentifierDefinition } from './identifier';
 
@@ -37,11 +37,11 @@ function appendIEnvironmentWith(base: IEnvironment | undefined, next: IEnvironme
 /**
  * Adds all writes of `next` to `base` (i.e., the operations of `next` *might* happen).
  */
-export function appendEnvironment(base: IREnvironmentInformation, next: IREnvironmentInformation | undefined): IREnvironmentInformation
-export function appendEnvironment(base: IREnvironmentInformation | undefined, next: IREnvironmentInformation): IREnvironmentInformation
+export function appendEnvironment(base: REnvironmentInformation, next: REnvironmentInformation | undefined): REnvironmentInformation
+export function appendEnvironment(base: REnvironmentInformation | undefined, next: REnvironmentInformation): REnvironmentInformation
 export function appendEnvironment(base: undefined, next: undefined): undefined
-export function appendEnvironment(base: IREnvironmentInformation | undefined, next: IREnvironmentInformation | undefined): IREnvironmentInformation | undefined
-export function appendEnvironment(base: IREnvironmentInformation | undefined, next: IREnvironmentInformation | undefined): IREnvironmentInformation | undefined {
+export function appendEnvironment(base: REnvironmentInformation | undefined, next: REnvironmentInformation | undefined): REnvironmentInformation | undefined
+export function appendEnvironment(base: REnvironmentInformation | undefined, next: REnvironmentInformation | undefined): REnvironmentInformation | undefined {
 	if(base === undefined) {
 		return next;
 	} else if(next === undefined) {
@@ -52,5 +52,6 @@ export function appendEnvironment(base: IREnvironmentInformation | undefined, ne
 	return {
 		current: appendIEnvironmentWith(base.current, next.current),
 		level:   base.level,
+		cache:   base.cache
 	};
 }
