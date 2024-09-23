@@ -8,7 +8,7 @@ import type { RFunctionArgument } from '../../../../../r-bridge/lang-4.x/ast/mod
 import { EmptyArgument } from '../../../../../r-bridge/lang-4.x/ast/model/nodes/r-function-call';
 import type { DataflowGraph, FunctionArgument } from '../../../../graph/graph';
 import type { NodeId } from '../../../../../r-bridge/lang-4.x/ast/model/processing/node-id';
-import type { REnvironmentInformation } from '../../../../environments/environment';
+import type { IREnvironmentInformation } from '../../../../environments/environment';
 import type { IdentifierReference } from '../../../../environments/identifier';
 import { overwriteEnvironment } from '../../../../environments/overwrite';
 import { resolveByName } from '../../../../environments/resolve-by-name';
@@ -36,13 +36,13 @@ export interface ProcessAllArgumentInput<OtherInfo> extends ForceArguments {
 }
 
 export interface ProcessAllArgumentResult {
-	readonly finalEnv:            REnvironmentInformation
+	readonly finalEnv:            IREnvironmentInformation
 	readonly callArgs:            FunctionArgument[]
 	readonly remainingReadInArgs: IdentifierReference[]
 	readonly processedArguments:  (DataflowInformation | undefined)[]
 }
 
-function forceVertexArgumentValueReferences(rootId: NodeId, value: DataflowInformation, graph: DataflowGraph, env: REnvironmentInformation): void {
+function forceVertexArgumentValueReferences(rootId: NodeId, value: DataflowInformation, graph: DataflowGraph, env: IREnvironmentInformation): void {
 	const valueVertex = graph.getVertex(value.entryPoint);
 	if(!valueVertex) {
 		return;

@@ -1,7 +1,7 @@
 import type { DataflowProcessorInformation } from './processor';
 import type { NodeId } from '../r-bridge/lang-4.x/ast/model/processing/node-id';
 import type { IdentifierReference } from './environments/identifier';
-import type { REnvironmentInformation } from './environments/environment';
+import type { IREnvironmentInformation } from './environments/environment';
 import { DataflowGraph } from './graph/graph';
 import type { GenericDifferenceInformation, WriteableDifferenceReport } from '../util/diff';
 
@@ -61,7 +61,7 @@ export interface DataflowInformation extends DataflowCfgInformation {
 	/** References which are written to */
 	out:               readonly IdentifierReference[]
 	/** Current environments used for name resolution, probably updated on the next expression-list processing */
-	environment:       REnvironmentInformation
+	environment:       IREnvironmentInformation
 	/** The current constructed dataflow graph */
 	graph:             DataflowGraph
 }

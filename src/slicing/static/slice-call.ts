@@ -8,7 +8,7 @@ import type {
 	DataflowGraphVertexFunctionCall,
 	DataflowGraphVertexFunctionDefinition, DataflowGraphVertexInfo
 } from '../../dataflow/graph/vertex';
-import type { REnvironmentInformation } from '../../dataflow/environments/environment';
+import type { IREnvironmentInformation } from '../../dataflow/environments/environment';
 import { initializeCleanEnvironments } from '../../dataflow/environments/environment';
 import { pushLocalEnvironment } from '../../dataflow/environments/scoping';
 import { overwriteEnvironment } from '../../dataflow/environments/overwrite';
@@ -19,7 +19,7 @@ import { resolveByName } from '../../dataflow/environments/resolve-by-name';
 import { edgeIncludesType, EdgeType } from '../../dataflow/graph/edge';
 import type { NodeId } from '../../r-bridge/lang-4.x/ast/model/processing/node-id';
 
-function retrieveActiveEnvironment(callerInfo: DataflowGraphVertexFunctionCall, baseEnvironment: REnvironmentInformation): REnvironmentInformation {
+function retrieveActiveEnvironment(callerInfo: DataflowGraphVertexFunctionCall, baseEnvironment: IREnvironmentInformation): IREnvironmentInformation {
 	let callerEnvironment = callerInfo.environment;
 
 	const level = callerEnvironment?.level ?? 0;
@@ -36,7 +36,7 @@ function retrieveActiveEnvironment(callerInfo: DataflowGraphVertexFunctionCall, 
 	return overwriteEnvironment(baseEnvironment, callerEnvironment);
 }
 
-function includeArgumentFunctionCallClosure(arg: FunctionArgument, baseEnvironment: REnvironmentInformation, activeEnvironment: REnvironmentInformation, queue: VisitingQueue, dataflowGraph: DataflowGraph): void {
+function includeArgumentFunctionCallClosure(arg: FunctionArgument, baseEnvironment: IREnvironmentInformation, activeEnvironment: IREnvironmentInformation, queue: VisitingQueue, dataflowGraph: DataflowGraph): void {
 	const valueRoot = getReferenceOfArgument(arg);
 	if(!valueRoot) {
 		return;
@@ -56,9 +56,9 @@ function includeArgumentFunctionCallClosure(arg: FunctionArgument, baseEnvironme
 function linkCallTargets(
 	onlyForSideEffects: boolean,
 	functionCallTargets: ReadonlySet<DataflowGraphVertexInfo>,
-	baseEnvironment: REnvironmentInformation,
+	baseEnvironment: IREnvironmentInformation,
 	baseEnvPrint: Fingerprint,
-	activeEnvironment: REnvironmentInformation,
+	activeEnvironment: IREnvironmentInformation,
 	activeEnvironmentFingerprint: Fingerprint,
 	queue: VisitingQueue
 ) {
@@ -120,7 +120,7 @@ export function sliceForCall(current: NodeToSlice, callerInfo: DataflowGraphVert
 }
 
 /** Returns true if we found at least one return edge */
-export function handleReturns(queue: VisitingQueue, currentEdges: OutgoingEdges, baseEnvFingerprint: Fingerprint, baseEnvironment: REnvironmentInformation): boolean {
+export function handleReturns(queue: VisitingQueue, currentEdges: OutgoingEdges, baseEnvFingerprint: Fingerprint, baseEnvironment: IREnvironmentInformation): boolean {
 	const e = [...currentEdges.entries()];
 	const found = e.filter(([_, edge]) => edgeIncludesType(edge.types, EdgeType.Returns));
 	if(found.length === 0) {

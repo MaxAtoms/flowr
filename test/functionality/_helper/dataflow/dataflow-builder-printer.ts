@@ -20,7 +20,7 @@ import {
 	VertexType
 } from '../../../../src/dataflow/graph/vertex';
 import { EmptyArgument } from '../../../../src/r-bridge/lang-4.x/ast/model/nodes/r-function-call';
-import type { REnvironmentInformation } from '../../../../src/dataflow/environments/environment';
+import type { IREnvironmentInformation } from '../../../../src/dataflow/environments/environment';
 import type { ControlDependency } from '../../../../src/dataflow/info';
 
 
@@ -255,7 +255,7 @@ class DataflowBuilderPrinter {
 		return undefined;
 	}
 
-	private getEnvironmentSuffix(env: REnvironmentInformation | undefined, prefix: string = '{ ', suffix: string = ' }'): string | undefined {
+	private getEnvironmentSuffix(env: IREnvironmentInformation | undefined, prefix: string = '{ ', suffix: string = ' }'): string | undefined {
 		if(env === undefined) {
 			return undefined;
 		}

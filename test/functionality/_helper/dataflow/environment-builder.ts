@@ -2,7 +2,7 @@ import type { NodeId } from '../../../../src/r-bridge/lang-4.x/ast/model/process
 import { normalizeIdToNumberIfPossible } from '../../../../src/r-bridge/lang-4.x/ast/model/processing/node-id';
 import type { IdentifierDefinition } from '../../../../src/dataflow/environments/identifier';
 import type { FunctionArgument } from '../../../../src/dataflow/graph/graph';
-import type { REnvironmentInformation , Environment } from '../../../../src/dataflow/environments/environment';
+import type { IREnvironmentInformation , Environment } from '../../../../src/dataflow/environments/environment';
 import { initializeCleanEnvironments } from '../../../../src/dataflow/environments/environment';
 import { define } from '../../../../src/dataflow/environments/define';
 import { popLocalEnvironment, pushLocalEnvironment } from '../../../../src/dataflow/environments/scoping';
@@ -32,7 +32,7 @@ export const defaultEnv = () => {
 /**
  * EnvironmentBuilder extends REnvironmentInformation with builder pattern methods.
  */
-export class EnvironmentBuilder implements REnvironmentInformation {
+export class EnvironmentBuilder implements IREnvironmentInformation {
 	/**
 	 * Use global environment.
 	 */
@@ -150,7 +150,7 @@ export class EnvironmentBuilder implements REnvironmentInformation {
 	 * (i.e., those _may_ happen).
 	 * @param other - The next environment.
 	 */
-	appendWritesOf(other: REnvironmentInformation) {
+	appendWritesOf(other: IREnvironmentInformation) {
 		const appendedEnv = appendEnvironment(this, other);
 		return new EnvironmentBuilder(appendedEnv.current, appendedEnv.level);
 	}

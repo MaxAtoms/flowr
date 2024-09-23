@@ -1,7 +1,7 @@
 import type { MergeableRecord } from '../../util/objects';
 import type { DataflowFunctionFlowInformation, FunctionArgument } from './graph';
 import type { NodeId } from '../../r-bridge/lang-4.x/ast/model/processing/node-id';
-import type { REnvironmentInformation } from '../environments/environment';
+import type { IREnvironmentInformation } from '../environments/environment';
 import type { ControlDependency } from '../info';
 
 export type DataflowGraphVertices<Vertex extends DataflowGraphVertexInfo = DataflowGraphVertexInfo> = Map<NodeId, Vertex>
@@ -34,7 +34,7 @@ interface DataflowGraphVertexBase extends MergeableRecord {
 	/**
 	 * The environment in which the vertex is set.
 	 */
-	environment?:        REnvironmentInformation | undefined
+	environment?:        IREnvironmentInformation | undefined
 	/**
 	 * See {@link IdentifierReference}
 	 */
@@ -70,7 +70,7 @@ export interface DataflowGraphVertexFunctionCall extends DataflowGraphVertexBase
 	args:          FunctionArgument[]
 	/** a performance flag to indicate that the respective call is _only_ calling a builtin function without any df graph attached */
 	onlyBuiltin:   boolean
-	environment:   REnvironmentInformation | undefined
+	environment:   IREnvironmentInformation | undefined
 }
 
 /**
@@ -94,7 +94,7 @@ export interface DataflowGraphVertexFunctionDefinition extends DataflowGraphVert
 	 * In other words: last expressions/return calls
 	 */
 	exitPoints:   readonly NodeId[]
-	environment?: REnvironmentInformation
+	environment?: IREnvironmentInformation
 }
 
 export type DataflowGraphVertexArgument = DataflowGraphVertexUse | DataflowGraphVertexVariableDefinition | DataflowGraphVertexFunctionDefinition | DataflowGraphVertexFunctionCall | DataflowGraphValue

@@ -18,7 +18,7 @@ import type { IdentifierReference } from '../../../../../environments/identifier
 import { overwriteEnvironment } from '../../../../../environments/overwrite';
 import { VertexType } from '../../../../../graph/vertex';
 import { popLocalEnvironment, pushLocalEnvironment } from '../../../../../environments/scoping';
-import type { REnvironmentInformation } from '../../../../../environments/environment';
+import type { IREnvironmentInformation } from '../../../../../environments/environment';
 import { initializeCleanEnvironments } from '../../../../../environments/environment';
 import { resolveByName } from '../../../../../environments/resolve-by-name';
 import { EdgeType } from '../../../../../graph/edge';
@@ -134,7 +134,7 @@ export function processFunctionDefinition<OtherInfo>(
 
 function updateNestedFunctionClosures<OtherInfo>(
 	subgraph: DataflowGraph,
-	outEnvironment: REnvironmentInformation,
+	outEnvironment: IREnvironmentInformation,
 	name: RSymbol<OtherInfo & ParentInformation>
 ) {
 	// track *all* function definitions - including those nested within the current graph,
@@ -179,7 +179,7 @@ function prepareFunctionEnvironment<OtherInfo>(data: DataflowProcessorInformatio
  * <p>
  * <b>Currently we may be unable to narrow down every definition within the body as we have not implemented ways to track what covers the first definitions precisely</b>
  */
-function findPromiseLinkagesForParameters(parameters: DataflowGraph, readInParameters: readonly IdentifierReference[], parameterEnvs: REnvironmentInformation, body: DataflowInformation): IdentifierReference[] {
+function findPromiseLinkagesForParameters(parameters: DataflowGraph, readInParameters: readonly IdentifierReference[], parameterEnvs: IREnvironmentInformation, body: DataflowInformation): IdentifierReference[] {
 	// first, we try to bind again within parameters - if we have it, fine
 	const remainingRead: IdentifierReference[] = [];
 	for(const read of readInParameters) {

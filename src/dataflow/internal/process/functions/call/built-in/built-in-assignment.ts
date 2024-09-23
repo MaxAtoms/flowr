@@ -22,7 +22,7 @@ import { VertexType } from '../../../../../graph/vertex';
 import { define } from '../../../../../environments/define';
 import { EdgeType } from '../../../../../graph/edge';
 import type { ForceArguments } from '../common';
-import type { REnvironmentInformation } from '../../../../../environments/environment';
+import type { IREnvironmentInformation } from '../../../../../environments/environment';
 import type { DataflowGraph } from '../../../../../graph/graph';
 
 function toReplacementSymbol<OtherInfo>(target: RNodeWithParent<OtherInfo & ParentInformation> & Base<OtherInfo> & Location, prefix: string, superAssignment: boolean): RSymbol<OtherInfo & ParentInformation> {
@@ -226,7 +226,7 @@ export interface AssignmentToSymbolParameters<OtherInfo> extends AssignmentConfi
  */
 export function markAsAssignment(
 	information: {
-		environment: REnvironmentInformation,
+		environment: IREnvironmentInformation,
 		graph:       DataflowGraph
 	},
 	nodeToDefine: IdentifierDefinition,

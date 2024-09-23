@@ -2,7 +2,7 @@ import type { Fingerprint } from './fingerprint';
 import { fingerprint } from './fingerprint';
 import type { NodeToSlice, SliceResult } from './slicer-types';
 import { slicerLogger } from './static-slicer';
-import type { REnvironmentInformation } from '../../dataflow/environments/environment';
+import type { IREnvironmentInformation } from '../../dataflow/environments/environment';
 import type { NodeId } from '../../r-bridge/lang-4.x/ast/model/processing/node-id';
 
 export class VisitingQueue {
@@ -25,7 +25,7 @@ export class VisitingQueue {
 	 * @param envFingerprint     - the fingerprint of the environment
 	 * @param onlyForSideEffects - whether the node is only used for its side effects
 	 */
-	public add(target: NodeId, env: REnvironmentInformation, envFingerprint: string, onlyForSideEffects: boolean): void {
+	public add(target: NodeId, env: IREnvironmentInformation, envFingerprint: string, onlyForSideEffects: boolean): void {
 		const idCounter = this.idThreshold.get(target) ?? 0;
 		if(idCounter > this.threshold) {
 			slicerLogger.warn(`id: ${target} has been visited ${idCounter} times, skipping`);

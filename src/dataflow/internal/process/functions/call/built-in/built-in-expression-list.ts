@@ -10,7 +10,7 @@ import { linkFunctionCalls } from '../../../../linker';
 import { guard, isNotUndefined } from '../../../../../../util/assert';
 import { unpackArgument } from '../argument/unpack-argument';
 import { patchFunctionCall } from '../common';
-import type { IEnvironment, REnvironmentInformation } from '../../../../../environments/environment';
+import type { IEnvironment, IREnvironmentInformation } from '../../../../../environments/environment';
 import { makeAllMaybe } from '../../../../../environments/environment';
 import type { NodeId } from '../../../../../../r-bridge/lang-4.x/ast/model/processing/node-id';
 import { DataflowGraph } from '../../../../../graph/graph';
@@ -28,7 +28,7 @@ import { dataflowLogger } from '../../../../../logger';
 
 
 const dotDotDotAccess = /\.\.\d+/;
-function linkReadNameToWriteIfPossible(read: IdentifierReference, environments: REnvironmentInformation, listEnvironments: Set<NodeId>, remainingRead: Map<string | undefined, IdentifierReference[]>, nextGraph: DataflowGraph) {
+function linkReadNameToWriteIfPossible(read: IdentifierReference, environments: IREnvironmentInformation, listEnvironments: Set<NodeId>, remainingRead: Map<string | undefined, IdentifierReference[]>, nextGraph: DataflowGraph) {
 	const readName = read.name && dotDotDotAccess.test(read.name) ? '...' : read.name;
 
 	const probableTarget = readName ? resolveByName(readName, environments) : undefined;
@@ -60,7 +60,7 @@ function linkReadNameToWriteIfPossible(read: IdentifierReference, environments: 
 
 function processNextExpression(
 	currentElement: DataflowInformation,
-	environment: REnvironmentInformation,
+	environment: IREnvironmentInformation,
 	listEnvironments: Set<NodeId>,
 	remainingRead: Map<string, IdentifierReference[]>,
 	nextGraph: DataflowGraph
@@ -74,7 +74,7 @@ function processNextExpression(
 function updateSideEffectsForCalledFunctions(calledEnvs: {
 	functionCall: NodeId;
 	called:       readonly DataflowGraphVertexInfo[]
-}[], inputEnvironment: REnvironmentInformation, nextGraph: DataflowGraph) {
+}[], inputEnvironment: IREnvironmentInformation, nextGraph: DataflowGraph) {
 	for(const { functionCall, called } of calledEnvs) {
 		for(const calledFn of called) {
 			guard(calledFn.tag === 'function-definition', 'called function must call a function definition');

@@ -17,7 +17,7 @@ import { EmptyArgument } from '../../r-bridge/lang-4.x/ast/model/nodes/r-functio
 import type { IdentifierDefinition, IdentifierReference } from '../environments/identifier';
 import type { NodeId } from '../../r-bridge/lang-4.x/ast/model/processing/node-id';
 import { normalizeIdToNumberIfPossible } from '../../r-bridge/lang-4.x/ast/model/processing/node-id';
-import type { REnvironmentInformation } from '../environments/environment';
+import type { IREnvironmentInformation } from '../environments/environment';
 import { initializeCleanEnvironments } from '../environments/environment';
 import type { AstIdMap } from '../../r-bridge/lang-4.x/ast/model/processing/decorate';
 import { cloneEnvironmentInformation } from '../environments/clone';
@@ -92,7 +92,7 @@ export class DataflowGraph<
 	Vertex extends DataflowGraphVertexInfo = DataflowGraphVertexInfo,
 	Edge   extends DataflowGraphEdge       = DataflowGraphEdge
 > {
-	private static DEFAULT_ENVIRONMENT: REnvironmentInformation | undefined = undefined;
+	private static DEFAULT_ENVIRONMENT: IREnvironmentInformation | undefined = undefined;
 	private _idMap:                     AstIdMap | undefined;
 	/* Set of vertices which have sideEffects that we do not know anything about */
 	private _unknownSideEffects = new Set<NodeId>();

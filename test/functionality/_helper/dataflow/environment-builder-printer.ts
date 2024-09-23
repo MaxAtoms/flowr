@@ -1,14 +1,14 @@
 import { assertUnreachable, isNotUndefined } from '../../../../src/util/assert';
 import { wrap, wrapControlDependencies } from './printer';
-import type { IEnvironment, REnvironmentInformation } from '../../../../src/dataflow/environments/environment';
+import type { IEnvironment, IREnvironmentInformation } from '../../../../src/dataflow/environments/environment';
 import { BuiltInEnvironment } from '../../../../src/dataflow/environments/environment';
 import type { IdentifierDefinition } from '../../../../src/dataflow/environments/identifier';
 
 export class EnvironmentBuilderPrinter {
-	private env:   REnvironmentInformation;
+	private env:   IREnvironmentInformation;
 	private lines: string[] = [];
 
-	constructor(env: REnvironmentInformation) {
+	constructor(env: IREnvironmentInformation) {
 		this.env = env;
 	}
 
