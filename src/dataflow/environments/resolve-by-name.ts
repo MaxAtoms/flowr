@@ -1,9 +1,7 @@
-import type { IEnvironment, REnvironmentInformation } from './environment';
-import { BuiltInEnvironment } from './environment';
+import type { REnvironmentInformation } from './environment';
 import { Ternary } from '../../util/logic';
 import type { Identifier, IdentifierDefinition } from './identifier';
 import { happensInEveryBranch } from '../info';
-
 
 /**
  * Resolves a given identifier name to a list of its possible definition location using R scoping and resolving rules.
@@ -13,11 +11,10 @@ import { happensInEveryBranch } from '../info';
  *
  * @returns A list of possible definitions of the identifier (one if the definition location is exactly and always known), or `undefined` if the identifier is undefined in the current scope/with the current environment information.
  */
-export function resolveByName(name: Identifier, environment: REnvironmentInformation): IdentifierDefinition[] | undefined {
-	let current: IEnvironment = environment.current;
+export function resolveByName(name: Identifier, environment: REnvironmentInformation): readonly IdentifierDefinition[] | undefined {
 	let definitions: IdentifierDefinition[] | undefined = undefined;
-	do{
-		const definition = current.memory.get(name);
+	for(const elem of environment.stack.slice(0,-1)) {
+		const definition = elem.memory.get(name);
 		if(definition !== undefined) {
 			if(definition.every(d => happensInEveryBranch(d.controlDependencies))) {
 				return definition;
@@ -26,10 +23,9 @@ export function resolveByName(name: Identifier, environment: REnvironmentInforma
 				definitions.push(...definition);
 			}
 		}
-		current = current.parent;
-	} while(current.id !== BuiltInEnvironment.id);
+	}
 
-	const builtIns = current.memory.get(name);
+	const builtIns = environment.stack[environment.stack.length - 1].memory.get(name);
 	if(definitions) {
 		return builtIns === undefined ? definitions : [...definitions, ...builtIns];
 	} else {

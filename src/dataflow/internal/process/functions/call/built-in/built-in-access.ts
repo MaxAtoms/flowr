@@ -49,9 +49,9 @@ export function processAccess<OtherInfo>(
 	if(!config.treatIndicesAsString) {
 		/* within an access operation which treats its fields, we redefine the table assignment ':=' as a trigger if this is to be treated as a definition */
 		// do we have a local definition that needs to be recovered?
-		const existing = data.environment.current.memory.get(':=');
+		const existing = data.environment.stack[0].memory.get(':=');
 		const outInfo = { definitionRootNodes: [] };
-		data.environment.current.memory.set(':=', [{
+		data.environment.stack[0].memory.set(':=', [{
 			kind:                'built-in-function',
 			definedAt:           BuiltIn,
 			controlDependencies: undefined,
@@ -62,7 +62,7 @@ export function processAccess<OtherInfo>(
 		fnCall = processKnownFunctionCall({ name, args, rootId, data, forceArgs: config.forceArgs });
 		/* recover the environment */
 		if(existing !== undefined) {
-			data.environment.current.memory.set(':=', existing);
+			data.environment.stack[0].memory.set(':=', existing);
 		}
 		if(head.value && outInfo.definitionRootNodes.length > 0) {
 			markAsAssignment(fnCall.information,

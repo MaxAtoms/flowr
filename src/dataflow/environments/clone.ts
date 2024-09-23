@@ -8,28 +8,19 @@ import {
 } from './environment';
 import type { Identifier, IdentifierDefinition } from './identifier';
 
-function cloneEnvironmentMemory(memory: Map<Identifier, IdentifierDefinition[]>): Map<Identifier, IdentifierDefinition[]> {
-	return new Map(JSON.parse(JSON.stringify([...memory])) as [Identifier, IdentifierDefinition[]][]);
-}
-
-function cloneEnvironment(environment: IEnvironment, recurseParents: boolean): IEnvironment
-function cloneEnvironment(environment: IEnvironment | undefined, recurseParents: boolean): IEnvironment | undefined {
-	if(environment === undefined) {
-		return undefined;
-	} else if(environment.id === BuiltInEnvironment.id) {
-		return BuiltInEnvironment;
+function cloneEnvironment(environment: IEnvironment): IEnvironment
+function cloneEnvironment(environment: IEnvironment | undefined): IEnvironment | undefined {
+	if(environment === undefined || environment.id === BuiltInEnvironment.id) {
+		return environment;
 	}
+	/* TODO: no deep copy? */
+	const mem = new Map(JSON.parse(JSON.stringify([...environment.memory])) as [Identifier, IdentifierDefinition[]][]);
 	/* make sure the clone has the same id */
-	const clone = new Environment(recurseParents ? cloneEnvironment(environment.parent, recurseParents) : environment.parent, environment.id);
-	clone.memory = cloneEnvironmentMemory(environment.memory);
-	return clone;
+	return new Environment(mem, environment.id);
 }
 
 export function cloneEnvironmentInformation(environment: REnvironmentInformation, recurseParents = true): REnvironmentInformation {
 	return {
-		current: cloneEnvironment(environment.current, recurseParents),
-		level:   environment.level,
-		/* caches are to be handled on invalidation */
-		cache:   environment.cache
+		stack: recurseParents ? environment.stack.map(cloneEnvironment) : [cloneEnvironment(environment.stack[0]), ...environment.stack.slice(1)]
 	};
 }

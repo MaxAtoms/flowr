@@ -412,7 +412,7 @@ export class DataflowGraph<
 
 function mergeNodeInfos<Vertex extends DataflowGraphVertexInfo>(current: Vertex, next: Vertex): Vertex {
 	guard(current.tag === next.tag, () => `nodes to be joined for the same id must have the same tag, but ${JSON.stringify(current, jsonReplacer)} vs ${JSON.stringify(next, jsonReplacer)}`);
-	guard(current.environment?.current.id === next.environment?.current.id, () => `nodes to be joined for the same id must have the same environment, but not for: ${JSON.stringify(current, jsonReplacer)} vs ${JSON.stringify(next, jsonReplacer)}`);
+	guard(current.environment?.stack[0].id === next.environment?.stack[0].id, () => `nodes to be joined for the same id must have the same environment, but not for: ${JSON.stringify(current, jsonReplacer)} vs ${JSON.stringify(next, jsonReplacer)}`);
 
 	if(current.tag === 'variable-definition') {
 		guard(current.scope === next.scope, 'nodes to be joined for the same id must have the same scope');

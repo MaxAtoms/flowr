@@ -141,7 +141,8 @@ function printEnvironmentToLines(env: IEnvironment | undefined): string[] {
 	} else if(env.id === BuiltInEnvironment.id) {
 		return ['Built-in'];
 	}
-	const lines = [...printEnvironmentToLines(env.parent), `${env.id}${'-'.repeat(40)}`];
+	/* TODO TODO TODO */
+	const lines = /* [...printEnvironmentToLines(env.parent), `${env.id}${'-'.repeat(40)}`] */ [];
 	const longestName = Math.max(...[...env.memory.keys()].map(x => x.length));
 	for(const [name, defs] of env.memory.entries()) {
 		const printName = `${name}:`;
@@ -154,6 +155,7 @@ function vertexToMermaid(info: DataflowGraphVertexInfo, mermaid: MermaidGraph, i
 	const fCall = info.tag === VertexType.FunctionCall;
 	const { open, close } = mermaidNodeBrackets(info.tag);
 
+	/* TODO TODO TOOD
 	if(info.environment && mermaid.includeEnvironments) {
 		if(info.environment.level > 0 || info.environment.current.memory.size !== 0) {
 			mermaid.nodeLines.push(
@@ -161,6 +163,7 @@ function vertexToMermaid(info: DataflowGraphVertexInfo, mermaid: MermaidGraph, i
 				printEnvironmentToLines(info.environment.current).map(x => `    %% ${x}`).join('\n'));
 		}
 	}
+	 */
 
 	const node = mermaid.rootGraph.idMap?.get(info.id);
 	const lexeme = node?.lexeme ?? (node?.type === RType.ExpressionList ? node?.grouping?.[0]?.lexeme : '') ?? '??';

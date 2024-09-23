@@ -27,6 +27,7 @@ import type { ForceArguments } from '../internal/process/functions/call/common';
 import { processApply } from '../internal/process/functions/call/built-in/built-in-apply';
 import { registerBuiltInDefinitions } from './built-in-config';
 import { DefaultBuiltinConfig } from './default-builtin-config';
+import { BuiltInEnvironment, EmptyBuiltInEnvironment } from './environment';
 
 export const BuiltIn = 'built-in';
 
@@ -139,3 +140,8 @@ export const BuiltInMemory = new Map<Identifier, IdentifierDefinition[]>();
 export const EmptyBuiltInMemory = new Map<Identifier, IdentifierDefinition[]>();
 
 registerBuiltInDefinitions(DefaultBuiltinConfig);
+
+(() => {
+	BuiltInEnvironment.memory ??= BuiltInMemory;
+	EmptyBuiltInEnvironment.memory ??= EmptyBuiltInMemory;
+})();

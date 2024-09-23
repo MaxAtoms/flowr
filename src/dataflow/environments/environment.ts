@@ -5,7 +5,6 @@
  * @module
  */
 import type { Identifier, IdentifierDefinition, IdentifierReference } from './identifier';
-import { BuiltInMemory, EmptyBuiltInMemory } from './built-in';
 import type { DataflowGraph } from '../graph/graph';
 import { resolveByName } from './resolve-by-name';
 import type { ControlDependency } from '../info';
@@ -44,13 +43,11 @@ export function makeAllMaybe(references: readonly IdentifierReference[] | undefi
 	return references.map(ref => makeReferenceMaybe(ref, graph, environments, includeDefs, defaultCd));
 }
 
-export type EnvironmentMemory = Map<Identifier, IdentifierDefinition[]>
+export type EnvironmentMemory = Map<Identifier, readonly IdentifierDefinition[]>
 
 export interface IEnvironment {
 	/** unique and internally generated identifier -- will not be used for comparison but assists debugging for tracking identities */
 	readonly id: number
-	/** Lexical parent of the environment, if any (can be manipulated by R code) */
-	parent:      IEnvironment
 	/**
    * Maps to exactly one definition of an identifier if the source is known, otherwise to a list of all possible definitions
    */
@@ -62,13 +59,11 @@ let environmentIdCounter = 0;
 
 export class Environment implements IEnvironment {
 	readonly id;
-	parent: IEnvironment;
-	memory: Map<Identifier, IdentifierDefinition[]>;
+	memory: Map<Identifier, readonly IdentifierDefinition[]>;
 
-	constructor(parent: IEnvironment, id?: number) {
-		this.parent = parent;
-		this.id = id ?? environmentIdCounter++;
-		this.memory = new Map();
+	constructor(memory: Map<Identifier, readonly IdentifierDefinition[]> = new Map(), id: number = environmentIdCounter++) {
+		this.id = id;
+		this.memory = memory;
 	}
 }
 
@@ -81,33 +76,27 @@ export class Environment implements IEnvironment {
  * One example would be maps holding a potential list of all definitions of a variable, if we do not know the execution path (like with `if(x) A else B`).
  */
 export interface REnvironmentInformation {
-	/**  The currently active environment (the stack is represented by the currently active {@link IEnvironment#parent}). Environments are maintained within the dataflow graph. */
-	readonly current: IEnvironment
-	/** The nesting level of the environment. `0` for the global/root environment. */
-	readonly level:   number
+	/** The currently active environment (the element at 0 is the current environment). Environments are maintained within the dataflow graph. */
+	readonly stack:  readonly IEnvironment[]
 	/** A (flattened) cache representation of the environments, this is to be actively maintained by environment modifications */
-	readonly cache?:  EnvironmentMemory
+	readonly cache?: EnvironmentMemory
 }
 
 
 /* the built-in environment is the root of all environments */
-export const BuiltInEnvironment = new Environment(undefined as unknown as IEnvironment);
+export const BuiltInEnvironment = new Environment();
 BuiltInEnvironment.memory = undefined as unknown as EnvironmentMemory;
 
-const EmptyBuiltInEnvironment: IEnvironment = {
+export const EmptyBuiltInEnvironment: IEnvironment = {
 	id:     BuiltInEnvironment.id,
 	memory: undefined as unknown as EnvironmentMemory,
-	parent: undefined as unknown as IEnvironment
 };
 
-
 export function initializeCleanEnvironments(fullBuiltIns = true): REnvironmentInformation {
-	BuiltInEnvironment.memory ??= BuiltInMemory;
-	EmptyBuiltInEnvironment.memory ??= EmptyBuiltInMemory;
+	const base = fullBuiltIns ? BuiltInEnvironment : EmptyBuiltInEnvironment;
 	return {
-		current: new Environment(fullBuiltIns ? BuiltInEnvironment : EmptyBuiltInEnvironment),
-		level:   0,
-		cache:   fullBuiltIns ? BuiltInMemory : EmptyBuiltInMemory
+		stack: [new Environment(), base],
+		cache: new Map<Identifier, IdentifierDefinition[]>()
 	};
 }
 

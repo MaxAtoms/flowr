@@ -14,7 +14,6 @@ function killBuiltInEnv(env: IEnvironment | undefined): IEnvironment {
 		/* in this case, the reference would be shared for sure */
 		return {
 			id:     env.id,
-			parent: killBuiltInEnv(env.parent),
 			memory: new Map<Identifier, IdentifierDefinition[]>()
 		};
 	}
@@ -25,8 +24,7 @@ function killBuiltInEnv(env: IEnvironment | undefined): IEnvironment {
 	}
 
 	return {
-		id:     env.id,
-		parent: killBuiltInEnv(env.parent),
+		id: env.id,
 		memory
 	};
 }
@@ -41,7 +39,7 @@ export function getSizeOfDfGraph(df: DataflowGraph): number {
 				...vertex,
 				environment: {
 					...vertex.environment,
-					current: killBuiltInEnv(v.environment?.current)
+					stack: vertex.environment.stack.map(env => killBuiltInEnv(env))
 				}
 			} as DataflowGraphVertexInfo;
 		}
@@ -53,7 +51,7 @@ export function getSizeOfDfGraph(df: DataflowGraph): number {
 					...vertex.subflow,
 					environment: {
 						...vertex.subflow.environment,
-						current: killBuiltInEnv(vertex.subflow.environment.current)
+						stack: vertex.subflow.environment.stack.map(env => killBuiltInEnv(env))
 					}
 				}
 			} as DataflowGraphVertexInfo;

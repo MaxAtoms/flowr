@@ -74,7 +74,7 @@ export function processFunctionDefinition<OtherInfo>(
 	if(remainingRead.length > 0) {
 		const nameIdShares = produceNameSharedIdMap(remainingRead);
 
-		const definedInLocalEnvironment = new Set([...bodyEnvironment.current.memory.values()].flat().map(d => d.nodeId));
+		const definedInLocalEnvironment = new Set([...bodyEnvironment.stack[0].memory.values()].flat().map(d => d.nodeId));
 
 		// Everything that is in body.out but not within the local environment populated for the function scope is a potential escape ~> global definition
 		const globalBodyOut = body.out.filter(d => !definedInLocalEnvironment.has(d.nodeId));
@@ -164,7 +164,7 @@ function updateNestedFunctionClosures<OtherInfo>(
 
 function prepareFunctionEnvironment<OtherInfo>(data: DataflowProcessorInformation<OtherInfo & ParentInformation>) {
 	let env = initializeCleanEnvironments();
-	for(let i = 0; i < data.environment.level + 1 /* add another env */; i++) {
+	for(let i = 0; i < data.environment.stack.length + 1 /* add another env */; i++) {
 		env = pushLocalEnvironment(env);
 	}
 	return { ...data, environment: env };

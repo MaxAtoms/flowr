@@ -1,8 +1,6 @@
 import type { IdentifierDefinition } from './identifier';
 import { guard } from '../../util/assert';
 import type { IEnvironment, REnvironmentInformation } from './environment';
-import { BuiltInEnvironment } from './environment';
-import { cloneEnvironmentInformation } from './clone';
 
 
 function defInEnv(newEnvironments: IEnvironment, name: string, definition: IdentifierDefinition) {
@@ -11,7 +9,7 @@ function defInEnv(newEnvironments: IEnvironment, name: string, definition: Ident
 	if(existing === undefined || definition.controlDependencies === undefined) {
 		newEnvironments.memory.set(name, [definition]);
 	} else {
-		existing.push(definition);
+		newEnvironments.memory.set(name, [...existing, definition]);
 	}
 }
 
@@ -22,30 +20,26 @@ function defInEnv(newEnvironments: IEnvironment, name: string, definition: Ident
 export function define(definition: IdentifierDefinition, superAssign: boolean | undefined, environment: REnvironmentInformation): REnvironmentInformation {
 	const { name } = definition;
 	guard(name !== undefined, () => `Name must be defined, but isn't for ${JSON.stringify(definition)}`);
-	let newEnvironment;
 	if(superAssign) {
-		newEnvironment = cloneEnvironmentInformation(environment, true);
-		let current: IEnvironment = newEnvironment.current;
-		let last = undefined;
 		let found = false;
-		do{
-			if(current.memory.has(name)) {
-				current.memory.set(name, [definition]);
+		for(const elem of environment.stack.slice(0,-1)) {
+			/* TODO: copy? */
+			if(elem.memory.has(name)) {
+				elem.memory.set(name, [definition]);
 				found = true;
 				break;
 			}
-			last = current;
-			current = current.parent;
-		} while(current.id !== BuiltInEnvironment.id);
+		}
 		if(!found) {
+			const last = environment.stack[environment.stack.length - 1];
 			guard(last !== undefined, () => `Could not find global scope for ${name}`);
 			last.memory.set(name, [definition]);
 		}
 	} else {
-		newEnvironment = cloneEnvironmentInformation(environment, false);
-		defInEnv(newEnvironment.current, name, definition);
+		/* TODO: copy? */
+		defInEnv(environment.stack[0], name, definition);
 	}
-	return newEnvironment;
+	return environment;
 }
 
 

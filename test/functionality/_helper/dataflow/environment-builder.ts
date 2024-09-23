@@ -25,8 +25,7 @@ export function argumentInCall(nodeId: NodeId, options?: { name?: string, contro
  * The constant global environment with all pre-defined functions.
  */
 export const defaultEnv = () => {
-	const global = initializeCleanEnvironments();
-	return new EnvironmentBuilder(global.current, 0);
+	return new EnvironmentBuilder(initializeCleanEnvironments().stack);
 };
 
 /**
@@ -36,15 +35,11 @@ export class EnvironmentBuilder implements REnvironmentInformation {
 	/**
 	 * Use global environment.
 	 */
-	current: Environment;
-	/**
-	 * Level is 0.
-	 */
-	level:   number;
+	stack: readonly Environment[];
 
-	constructor(env: Environment, level: number) {
-		this.current = env;
-		this.level = level;
+
+	constructor(env: readonly Environment[]) {
+		this.stack = env;
 	}
 
 	/**
@@ -126,7 +121,7 @@ export class EnvironmentBuilder implements REnvironmentInformation {
 			nodeId:              normalizeIdToNumberIfPossible(def.nodeId),
 			controlDependencies: def.controlDependencies?.map(c => ({ ...c, id: normalizeIdToNumberIfPossible(c.id) }))
 		} as IdentifierDefinition, superAssignment, this);
-		return new EnvironmentBuilder(envWithDefinition.current, envWithDefinition.level);
+		return new EnvironmentBuilder(envWithDefinition.stack);
 	}
 
 	/**
@@ -134,7 +129,7 @@ export class EnvironmentBuilder implements REnvironmentInformation {
 	 */
 	pushEnv(): EnvironmentBuilder {
 		const newEnvironment = pushLocalEnvironment(this);
-		return new EnvironmentBuilder(newEnvironment.current, newEnvironment.level);
+		return new EnvironmentBuilder(newEnvironment.stack);
 	}
 
 	/**
@@ -142,7 +137,7 @@ export class EnvironmentBuilder implements REnvironmentInformation {
 	 */
 	popEnv(): EnvironmentBuilder {
 		const underlyingEnv = popLocalEnvironment(this);
-		return new EnvironmentBuilder(underlyingEnv.current, underlyingEnv.level);
+		return new EnvironmentBuilder(underlyingEnv.stack);
 	}
 
 	/**
@@ -152,6 +147,6 @@ export class EnvironmentBuilder implements REnvironmentInformation {
 	 */
 	appendWritesOf(other: REnvironmentInformation) {
 		const appendedEnv = appendEnvironment(this, other);
-		return new EnvironmentBuilder(appendedEnv.current, appendedEnv.level);
+		return new EnvironmentBuilder(appendedEnv.stack);
 	}
 }

@@ -1,10 +1,10 @@
 import { guard } from '../../util/assert';
 import type { REnvironmentInformation, IEnvironment } from './environment';
-import { Environment, BuiltInEnvironment } from './environment';
+import { Environment } from './environment';
 import type { IdentifierDefinition } from './identifier';
 
-function uniqueMergeValues(old: IdentifierDefinition[], value: readonly IdentifierDefinition[]): IdentifierDefinition[] {
-	const result = old;
+function uniqueMergeValues(old: readonly IdentifierDefinition[], value: readonly IdentifierDefinition[]): IdentifierDefinition[] {
+	const result = [...old];
 	for(const v of value) {
 		const find = result.findIndex(o => o.nodeId === v.nodeId && o.definedAt === v.definedAt);
 		if(find < 0) {
@@ -26,11 +26,7 @@ function appendIEnvironmentWith(base: IEnvironment | undefined, next: IEnvironme
 		}
 	}
 
-	const parent = base.parent === BuiltInEnvironment ? BuiltInEnvironment : appendIEnvironmentWith(base.parent, next.parent);
-
-	const out = new Environment(parent);
-	out.memory = map;
-	return out;
+	return new Environment(map);
 }
 
 
@@ -47,11 +43,9 @@ export function appendEnvironment(base: REnvironmentInformation | undefined, nex
 	} else if(next === undefined) {
 		return base;
 	}
-	guard(base.level === next.level, 'environments must have the same level to be handled, it is up to the caller to ensure that');
+	guard(base.stack.length === next.stack.length, 'environments must have the same level to be handled, it is up to the caller to ensure that');
 
 	return {
-		current: appendIEnvironmentWith(base.current, next.current),
-		level:   base.level,
-		cache:   base.cache
+		stack: base.stack.map((b, i) => appendIEnvironmentWith(b, next.stack[i]))
 	};
 }

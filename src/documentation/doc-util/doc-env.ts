@@ -14,5 +14,6 @@ export function printEnvironmentToMarkdown(env: IEnvironment | undefined): strin
 		const printName = `\`${name}\``;
 		lines.push(`| ${printName} | {${defs.map(printIdentifier).join(', ')}} |`);
 	}
-	return lines.join('\n') + '\n\n<details><summary style="color:gray"> Parent Environment</summary>\n\n' + printEnvironmentToMarkdown(env.parent) + '\n\n</details>';
+	// TODO TODO TODO
+	return lines.join('\n') + '\n\n<details><summary style="color:gray"> Parent Environment</summary>\n\n' /* + printEnvironmentToMarkdown(env.parent) */ + '\n\n</details>';
 }

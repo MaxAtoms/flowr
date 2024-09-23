@@ -22,13 +22,13 @@ import type { NodeId } from '../../r-bridge/lang-4.x/ast/model/processing/node-i
 function retrieveActiveEnvironment(callerInfo: DataflowGraphVertexFunctionCall, baseEnvironment: REnvironmentInformation): REnvironmentInformation {
 	let callerEnvironment = callerInfo.environment;
 
-	const level = callerEnvironment?.level ?? 0;
+	const level = callerEnvironment?.stack.length ?? 0;
 
-	if(baseEnvironment.level !== level) {
-		while(baseEnvironment.level < level) {
+	if(baseEnvironment.stack.length !== level) {
+		while(baseEnvironment.stack.length < level) {
 			baseEnvironment = pushLocalEnvironment(baseEnvironment);
 		}
-		while(baseEnvironment.level > level) {
+		while(baseEnvironment.stack.length > level) {
 			callerEnvironment = pushLocalEnvironment(callerEnvironment ?? initializeCleanEnvironments(true));
 		}
 	}

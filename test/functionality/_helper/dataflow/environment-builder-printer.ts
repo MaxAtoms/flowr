@@ -1,7 +1,6 @@
 import { assertUnreachable, isNotUndefined } from '../../../../src/util/assert';
 import { wrap, wrapControlDependencies } from './printer';
 import type { IEnvironment, REnvironmentInformation } from '../../../../src/dataflow/environments/environment';
-import { BuiltInEnvironment } from '../../../../src/dataflow/environments/environment';
 import type { IdentifierDefinition } from '../../../../src/dataflow/environments/identifier';
 
 export class EnvironmentBuilderPrinter {
@@ -13,14 +12,12 @@ export class EnvironmentBuilderPrinter {
 	}
 
 	private process() {
-		let current = this.env.current;
-		let i = this.env.level;
-		while(current !== undefined && current.id !== BuiltInEnvironment.id) {
+		let i = this.env.stack.length;
+		for(const env of this.env.stack) {
 			if(i-- > 0) {
 				this.push();
 			}
-			this.processEnvironment(current);
-			current = current.parent;
+			this.processEnvironment(env);
 		}
 	}
 
@@ -89,7 +86,7 @@ export class EnvironmentBuilderPrinter {
 	}
 
 	public print(): string {
-		if(this.env.level === 0 && this.env.current.memory.size === 0) {
+		if(this.env.stack.length === 2 && this.env.stack[0].memory.size === 0) {
 			return '';
 		}
 		this.process();

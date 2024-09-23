@@ -74,7 +74,6 @@ export function diffEnvironment<Report extends WriteableDifferenceReport>(a: IEn
 		});
 	}
 	diffMemory(a, b, { ...info, position: `${info.position}[at level: ${depth}] ` });
-	diffEnvironment(a.parent, b.parent, { ...info, position: `${info.position}Parents of ${a.id} & ${b.id}. ` }, depth--);
 }
 
 export function diffEnvironmentInformation<Report extends WriteableDifferenceReport>(a: REnvironmentInformation | undefined, b: REnvironmentInformation | undefined, info: GenericDifferenceInformation<Report>): void {
@@ -84,8 +83,11 @@ export function diffEnvironmentInformation<Report extends WriteableDifferenceRep
 		}
 		return;
 	}
-	if(a.level !== b.level) {
-		info.report.addComment(`${info.position}Different environment levels: ${info.leftname}: ${a.level} vs. ${info.rightname}: ${b.level}. Using max to report level for further errors.`);
+	if(a.stack.length !== b.stack.length) {
+		info.report.addComment(`${info.position}Different environment levels: ${info.leftname}: ${a.stack.length} vs. ${info.rightname}: ${b.stack.length}. Using max to report level for further errors.`);
 	}
-	diffEnvironment(a.current, b.current, info, Math.max(a.level, b.level));
+	const maxDepth = Math.max(a.stack.length, b.stack.length);
+	for(let i = 0; i < maxDepth; ++i) {
+		diffEnvironment(a.stack[i], b.stack[i], { ...info, position: `${info.position}Level ${i}. ` }, maxDepth);
+	}
 }

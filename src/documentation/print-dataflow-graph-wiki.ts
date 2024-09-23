@@ -433,7 +433,7 @@ In other words, this is a linked list of tables (scopes), mapping identifiers to
 A summarized version of the produced environment looks like this:
 
 ${
-		printEnvironmentToMarkdown(result.dataflow.environment.current)
+		printEnvironmentToMarkdown(result.dataflow.environment.stack[0] /* TODO: recurse parents! */)
 		}
 
 This shows us that the local environment contains a single definition for \`x\` (with id 0) and that the parent environment is the built-in environment.
