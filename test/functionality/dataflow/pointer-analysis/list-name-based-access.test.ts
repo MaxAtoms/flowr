@@ -4,9 +4,11 @@ import { emptyGraph } from '../../../../src/dataflow/graph/dataflowgraph-builder
 import { label } from '../../_helper/label';
 
 describe.sequential('List Access', withShell(shell => {
+	const basicCapabilities = ['name-normal', 'function-calls', 'named-arguments', 'dollar-access', 'subsetting-multiple'] as const;
+
 	describe('Access named argument', () => {
 		assertDataflow(
-			label('Assert reads edge to named argument', ['name-normal', 'function-calls', 'named-arguments', 'dollar-access', 'subsetting-multiple']),
+			label('Assert reads edge to named argument', basicCapabilities),
 			shell,
 			`person <- list(age = 24, name = "John")
 person$name`,
