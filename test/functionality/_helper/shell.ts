@@ -41,6 +41,8 @@ import type { PipelineOutput } from '../../../src/core/steps/pipeline/pipeline';
 import type { FlowrSearchLike } from '../../../src/search/flowr-search-builder';
 import { runSearch } from '../../../src/search/flowr-search-executor';
 import { type ContainerIndex } from '../../../src/dataflow/graph/vertex';
+import type { Pipeline, PipelineOutput } from '../../../src/core/steps/pipeline/pipeline';
+import type { DataflowInformation } from '../../../src/dataflow/info';
 
 export const testWithShell = (msg: string, fn: (shell: RShell, test: unknown) => void | Promise<void>) => {
 	return test(msg, async function(this: unknown): Promise<void> {
@@ -316,11 +318,11 @@ function cropIfTooLong(str: string): string {
 	return str.length > 100 ? str.substring(0, 100) + '...' : str;
 }
 
-export function assertDataflow(
+export function assertDataflow<P extends Pipeline>(
 	name: string | TestLabel,
 	shell: RShell,
 	input: string | RParseRequests,
-	expected: DataflowGraph,
+	expected: DataflowGraph | ((data: PipelineOutput<P> & { normalize: NormalizedAst, dataflow: DataflowInformation }) => DataflowGraph),
 	userConfig?: Partial<DataflowTestConfiguration>,
 	startIndexForDeterministicIds = 0
 ): void {
@@ -331,6 +333,10 @@ export function assertDataflow(
 			request: typeof input === 'string' ? requestFromInput(input) : input,
 			getId:   deterministicCountingIdGenerator(startIndexForDeterministicIds)
 		}).allRemainingSteps();
+
+		if(typeof expected === 'function') {
+			expected = expected(info);
+		}
 
 		// assign the same id map to the expected graph, so that resolves work as expected
 		expected.setIdMap(info.normalize.idMap);
